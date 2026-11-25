@@ -1,0 +1,119 @@
+{
+  "generated": "2026-11-25T10:38:05.506Z",
+  "machine": "Intel(R) Core(TM) Ultra 9 275HX, Node v24.15.0",
+  "unit": "seconds",
+  "atoms": {
+    "NaiveSearch": {
+      "coefficients": {
+        "scan": 3.052113726256691e-9,
+        "base": 0
+      },
+      "relErrorMedian": 0.20172223238811685,
+      "n": 165
+    },
+    "BoyerMooreSearch": {
+      "coefficients": {
+        "scan": 4.6216441985723755e-9,
+        "prep": 1.7072646741226492e-9,
+        "base": 0.000018708743684591127
+      },
+      "relErrorMedian": 0.281046552622143,
+      "n": 172
+    },
+    "HorspoolSearch": {
+      "coefficients": {
+        "scan": 3.8244413125399804e-9,
+        "prep": 0,
+        "base": 0.000017676154730601244
+      },
+      "relErrorMedian": 0.25995131653253506,
+      "n": 173
+    },
+    "ShiftOrSearch": {
+      "coefficients": {
+        "scan": 1.6429551148520368e-9,
+        "verify": 226467064.54330227,
+        "base": 0.00000857426239093125
+      },
+      "relErrorMedian": 0.1320875826858868,
+      "n": 165
+    },
+    "TunedBoyerMooreSearch": {
+      "coefficients": {
+        "enc": 1.4027836382688856e-9,
+        "scan": 3.0124015093942597e-9,
+        "prep": 0,
+        "base": 0.000018651298455292894
+      },
+      "relErrorMedian": 0.22036004002604,
+      "n": 175
+    },
+    "HashQSearch": {
+      "coefficients": {
+        "scan": 2.6201288599830982e-9,
+        "prep": 1.0574095613552894e-9,
+        "base": 0.00001560252317118209
+      },
+      "relErrorMedian": 0.2424540502439821,
+      "n": 177
+    },
+    "KmpSearch": {
+      "coefficients": {
+        "scan": 2.203763229078261e-9,
+        "prep": 0,
+        "base": 0.0000022021772707988522
+      },
+      "relErrorMedian": 0.23210770185635476,
+      "n": 165
+    },
+    "RabinKarpSearch": {
+      "coefficients": {
+        "scan": 4.024100698540839e-9,
+        "probe": 2.9646241864914402e-8,
+        "prep": 9.192009914342025e-9,
+        "base": 0.00005312471088468662
+      },
+      "relErrorMedian": 0.2419750187481962,
+      "n": 180
+    },
+    "AhoCorasickSearch": {
+      "coefficients": {
+        "scan": 2.6408255504630405e-9,
+        "scanMem": 1.8123466494942755e-10,
+        "prep": 3.907195905529189e-9,
+        "base": 0.000025602281832418565
+      },
+      "relErrorMedian": 0.23538291134248185,
+      "n": 180
+    },
+    "WuManberSearch": {
+      "coefficients": {
+        "scan": 2.240784998709213e-9,
+        "verify": 5.866393429591759e-10,
+        "prep": 2.0604764119344725e-9,
+        "base": 0.000024579570502929342
+      },
+      "relErrorMedian": 0.2251120819394408,
+      "n": 180
+    },
+    "SuffixArraySearch": {
+      "coefficients": {
+        "prep": 2.7021201118562872e-9,
+        "query": 4.162049718896141e-9,
+        "base": 0
+      },
+      "relErrorMedian": 0.14938114617724413,
+      "n": 180
+    },
+    "FmIndexSearch": {
+      "coefficients": {
+        "prep": 2.9377564512745572e-9,
+        "occ": 0,
+        "query": 7.256638031091128e-8,
+        "base": 0
+      },
+      "relErrorMedian": 0.1387743871913067,
+      "n": 180
+    }
+  }
+}
