@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Akıllı Tam Desen Eşleştirme — YZM327 Sunum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0b1220; --bg2: #111a2e; --card: #16213a; --line: #26334f;
+    --ink: #e8eefc; --muted: #9fb0d0; --acc: #4fd1c5; --acc2: #7c9cff; --warn: #ffb454; --bad: #ff6b81; --good: #5ee6a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #05080f; font-family: "Segoe UI", "Inter", Helvetica, Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px;
+    background: radial-gradient(1200px 600px at 85% -10%, #1c2b52 0%, transparent 60%), linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+    padding: 56px 72px 48px; display: flex; flex-direction: column;
+    opacity: 0; transform: translate(calc(-50% + 40px), -50%) scale(var(--s, 1)); transition: opacity .45s ease, transform .45s ease; pointer-events: none;
+    transform-origin: center center;
+  }
+  .slide.active { opacity: 1; transform: translate(-50%, -50%) scale(var(--s, 1)); pointer-events: auto; }
+  .slide.prev { transform: translate(calc(-50% - 40px), -50%) scale(var(--s, 1)); }
+  .kicker { font-size: 15px; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 600; margin-bottom: 10px; }
+  h1 { font-size: 54px; line-height: 1.08; font-weight: 750; letter-spacing: -.01em; }
+  h2 { font-size: 38px; line-height: 1.15; font-weight: 700; margin-bottom: 22px; letter-spacing: -.01em; }
+  h2 .hl, h1 .hl { background: linear-gradient(90deg, var(--acc), var(--acc2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  p, li { font-size: 21px; line-height: 1.45; color: var(--ink); }
+  .muted { color: var(--muted); }
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 22px; display: flex; justify-content: space-between; font-size: 13px; color: #6f80a3; }
+  .speaker { position: absolute; top: 24px; right: 32px; font-size: 13px; color: #8ea0c4; border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; }
+  .grid { display: grid; gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card h3 { font-size: 19px; margin-bottom: 6px; }
+  .card p { font-size: 16.5px; color: var(--muted); line-height: 1.4; }
+  .pill { display: inline-block; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-right: 6px; }
+  .A { background: #3b2a12; color: var(--warn); } .B { background: #12322e; color: var(--acc); } .C { background: #1b2550; color: var(--acc2); } .D { background: #3a1a2a; color: var(--bad); } .S { background: #262f45; color: var(--muted); }
+  .big { font-size: 64px; font-weight: 800; line-height: 1; }
+  .stat .lbl { font-size: 15px; color: var(--muted); margin-top: 8px; }
+  code, .mono { font-family: "Cascadia Code", Consolas, monospace; }
+  .term { background: #070b14; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; font-family: "Cascadia Code", Consolas, monospace; font-size: 15.5px; line-height: 1.5; color: #cfe3ff; white-space: pre-wrap; }
+  .term .p { color: var(--acc); } .term .c { color: #6f80a3; } .term .k { color: var(--warn); } .term .g { color: var(--good); }
+  table { border-collapse: collapse; width: 100%; font-size: 18px; }
+  th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 15px; text-transform: uppercase; letter-spacing: .05em; }
+  tr.me td { color: var(--good); font-weight: 700; background: rgba(94,230,160,.07); }
+  .fig { background: #fff; border-radius: 12px; padding: 8px; }
+  .fig img { width: 100%; display: block; }
+  .flow { display: flex; align-items: stretch; gap: 24px; margin: 8px 0 22px; }
+  .flow .step { flex: 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; position: relative; }
+  .flow .step:not(:last-child)::after { content: "➜"; position: absolute; right: -13px; top: 50%; transform: translate(50%, -50%); color: var(--acc); font-size: 18px; z-index: 2; }
+  .flow .step b { display: block; font-size: 17px; margin-bottom: 4px; color: var(--acc); }
+  .flow .step span { font-size: 15px; color: var(--muted); line-height: 1.35; display: block; }
+  .callout { border-left: 4px solid var(--warn); background: rgba(255,180,84,.08); padding: 14px 18px; border-radius: 0 12px 12px 0; }
+  .callout.bad { border-color: var(--bad); background: rgba(255,107,129,.08); }
+  .callout.good { border-color: var(--good); background: rgba(94,230,160,.08); }
+  .progress { position: fixed; left: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--acc), var(--acc2)); transition: width .4s; z-index: 10; }
+  .hud { position: fixed; left: 50%; transform: translateX(-50%); bottom: 14px; font-size: 12px; color: #55658a; z-index: 10; font-family: Consolas, monospace; }
+  ul.clean { list-style: none; } ul.clean li { padding-left: 28px; position: relative; margin: 8px 0; }
+  ul.clean li::before { content: ""; position: absolute; left: 4px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--acc); }
+  .title-wrap { margin-top: auto; margin-bottom: auto; }
+  .names { display: flex; gap: 28px; margin-top: 34px; }
+  .names .card { min-width: 300px; }
+  .names .card b { font-size: 22px; } .names .card div { color: var(--muted); font-size: 15px; margin-top: 4px; }
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { background: #0b1220; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .deck { width: auto; height: auto; overflow: visible; }
+    .slide { position: relative; left: auto; top: auto; opacity: 1 !important; transform: none !important; page-break-after: always; break-after: page; margin: 0; }
+    .progress, .hud { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1. KAPAK -->
+<section class="slide">
+  <div class="speaker">Ahmed Berat · 0:00–0:15</div>
+  <div class="title-wrap">
+    <div class="kicker">YZM327 · Yapay Zeka için Yazılım Mühendisliği · Vize Projesi</div>
+    <h1>Akıllı Tam Desen Eşleştirme<br><span class="hl">Atomlar ve seçici bir molekül</span></h1>
+    <p class="muted" style="margin-top:18px;font-size:22px">Internet of Science · görev <code>text.pattern-match.exact</code> · kod ve yapay zekâ derlemleri</p>
+    <div class="names">
+      <div class="card"><b>Ahmed Berat Özer</b><div>A grubu atomlar · maliyet modeli · molekül · kalibrasyon</div></div>
+      <div class="card"><b>Görkem Özer</b><div>B/C/D grubu atomlar · testler · CLI · doğrulama</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>github.com/ahmedberatAI/desen-eslestirme</span><span>1 / 8</span></div>
+</section>
+
+<!-- 2. PROBLEM -->
+<section class="slide">
+  <div class="speaker">Ahmed Berat · 0:15–0:50</div>
+  <div class="kicker">Problem</div>
+  <h2>Her duruma uyan <span class="hl">tek bir en hızlı</span> algoritma yok</h2>
+  <div class="grid" style="grid-template-columns: 1fr 1.55fr; align-items:center; flex:1">
+    <div>
+      <ul class="clean">
+        <li>Görev: kodda, loglarda, <b>LLM derlemlerinde</b> desenlerin <b>bütün</b> konumlarını bul (örtüşenler dahil)</li>
+        <li>Kod araması · gizli anahtar taraması · <b>kıyaslama sızıntısı</b> · çıktı kara listeleri</li>
+        <li>180 vakalık ölçümde <b>9 farklı</b> atom en az bir kez birinci oldu</li>
+        <li>Cevabımız: girdinin <b>şekline bakıp</b> seçen bir molekül — bir <b>algoritma seçimi</b> problemi</li>
+      </ul>
+    </div>
+    <div class="fig"><img src="assets/fig-winners.svg" alt="En hızlı atom haritası"></div>
+  </div>
+  <div class="footer"><span>Kalibrasyon ızgarası: 3 alfabe (eylem izi, hex, kaynak kod) × 3 n × 5 m × 4 k</span><span>2 / 8</span></div>
+</section>
+
+<!-- 3. ATOMLAR -->
+<section class="slide">
+  <div class="speaker">Görkem · 0:50–1:35</div>
+  <div class="kicker">Atomlar</div>
+  <h2>10 yeni atom, aynı sözleşme</h2>
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="card"><span class="pill A">A</span><h3>Horspool</h3><p>Kötü karakter kayması</p></div>
+    <div class="card"><span class="pill A">A</span><h3>Shift-Or</h3><p>Bit paralel, m &gt; 32 için filtre</p></div>
+    <div class="card"><span class="pill A">A</span><h3>Tuned BM</h3><p>Sentinel + 3× açılmış döngü</p></div>
+    <div class="card"><span class="pill A">A</span><h3>HASHq</h3><p>q-gram özetiyle kayma</p></div>
+    <div class="card"><span class="pill B">B</span><h3>KMP · Rabin-Karp</h3><p>Doğrusal · çok desenli kayan özet</p></div>
+    <div class="card"><span class="pill C">C</span><h3>Aho-Corasick</h3><p>Tam DFA, tek geçiş</p></div>
+    <div class="card"><span class="pill C">C</span><h3>Wu-Manber ★</h3><p>Çok desenli blok kayması</p></div>
+    <div class="card"><span class="pill D">D</span><h3>Suffix array · FM-index ★</h3><p>Dizin + ikili / geriye arama</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns: 1.25fr 1fr; margin-top:20px">
+    <div class="callout"><b>Yaygın hata:</b> q-gram kaymasında, desende olmayan bir q-gram için <b>m</b> kaydırmak. Doğrusu <b>m − q + 1</b>.<br>
+      <span class="muted mono" style="font-size:16px">desen abc, q=2, metin xyabc → m kaydırırsa 2. konumdaki eşleşme kaçar</span></div>
+    <div class="callout good">Hazır arama işlevi yok (indexOf, RegExp…) — bir test kaynak kodu tarıyor. ★ = bonus atom</div>
+  </div>
+  <div class="footer"><span>Hepsi ExactSearchAtom'dan türer: doğrulama, ignoreCase, sıralama tek yerde</span><span>3 / 8</span></div>
+</section>
+
+<!-- 4. MOLEKÜL -->
+<section class="slide">
+  <div class="speaker">Ahmed Berat · 1:35–2:20</div>
+  <div class="kicker">Molekül</div>
+  <h2>Kural değil, <span class="hl">ölçümle öğrenilen maliyet modeli</span></h2>
+  <div class="flow">
+    <div class="step"><b>1 · Veri şekli</b><span>İlk belgeden: n, σ, σ<sub>eff</sub>=1/Σp², k, m min/maks/ort.</span></div>
+    <div class="step"><b>2 · Özellikler</b><span>Her atom kendi beklenen işini söyler: kayma sayısı, DFA hücresi, n log n…</span></div>
+    <div class="step"><b>3 · Katsayılar</b><span>180 vakalık ölçümden öğrenilir: negatif olmayan göreli EKK</span></div>
+    <div class="step"><b>4 · Seçim</b><span>t̂ = Σ c·x en küçük olan; "uygulanamaz" diyen atom elenir</span></div>
+  </div>
+  <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
+    <div class="term"><span class="c">// Horspool'un beklenen işi</span>
+scan = Σ n / E[kayma](m, σ<sub>eff</sub>)
+E = Σ<sub>d=1..L</sub> (1 − 1/σ)<sup>k(d−1)</sup>
+
+<span class="c">// yeni atom eklemek = tek satır</span>
+<span class="k">registry</span>.register(YeniAtom); <span class="g">// molekül değişmez</span></div>
+    <ul class="clean" style="margin-top:0">
+      <li>Algoritma seçimi (Rice 1976) = atom başına <b>açıklanabilir çalışma süresi regresyonu</b></li>
+      <li>Molekülün kodunda <b>tek bir atom adı bile yok</b>; testte eklenen sahte atom seçiliyor</li>
+      <li><code>record</code> kararı gerekçesiyle anlatıyor: şekil, 12 tahmin, neden</li>
+    </ul>
+  </div>
+  <div class="footer"><span>src/molecules/ExactMatch.js · src/registry.js · src/shape.js</span><span>4 / 8</span></div>
+</section>
+
+<!-- 5. DEMO -->
+<section class="slide">
+  <div class="speaker">Ahmed Berat · 2:20–3:05 · CANLI</div>
+  <div class="kicker">Canlı demo · <span style="text-transform:none">llm.c train_gpt2.c</span> (GPT-2 eğitim kodu, 50 680 karakter)</div>
+  <h2>Aynı kod dosyası, farklı girdi, <span class="hl">farklı karar</span></h2>
+  <div class="grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="term"><span class="p">$</span> node bin/ios.js explain \
+    --patterns attention_forward &lt; train_gpt2.c
+
+<span class="c">n=50680, σ=78 (σ_eff=6.2), k=1, m=17</span>
+<span class="g">selected: HashQSearch</span>        35.9 µs
+  2. WuManberSearch         42.2 µs ×1.18
+  3. HorspoolSearch         50.6 µs</div>
+    <div class="term"><span class="p">$</span> node bin/ios.js explain \
+    --patterns-file desenler300.txt &lt; train_gpt2.c
+
+<span class="c">n=50680, σ=78, k=300 sembol, m=5..29</span>
+<span class="g">selected: WuManberSearch</span>    592.5 µs
+  2. AhoCorasickSearch     746.1 µs ×1.26</div>
+  </div>
+  <div class="term" style="margin-top:18px"><span class="p">$</span> node bin/ios.js run ExactMatch --patterns attention_forward --input train_gpt2.c
+<span class="c">{"id":"train_gpt2.c","pattern":"attention_forward","position":10854,"length":17}</span>
+<span class="c">{"id":"train_gpt2.c","pattern":"attention_forward","position":35369,"length":17}</span>   <span class="k">… tanım + çağrı, JSONL</span></div>
+  <div class="footer"><span>Komutlar: presentation/demo/demo.ps1</span><span>5 / 8</span></div>
+</section>
+
+<!-- 6. SONUÇLAR -->
+<section class="slide">
+  <div class="speaker">Görkem · 3:05–3:55</div>
+  <div class="kicker">Doğrulama · 120 görülmemiş vaka</div>
+  <h2>Molekül, <span class="hl">her sabit politikadan iyi</span></h2>
+  <div class="grid" style="grid-template-columns: 1.15fr 1fr; align-items:start">
+    <div>
+      <div class="grid" style="grid-template-columns: repeat(3,1fr); margin-bottom:18px">
+        <div class="card stat"><div class="big" style="color:var(--good)">%80,8</div><div class="lbl">en hızlıyı seçti</div></div>
+        <div class="card stat"><div class="big">1,09×</div><div class="lbl">ort. yavaşlama (geo.)</div></div>
+        <div class="card stat"><div class="big">1,29×</div><div class="lbl">toplam süre / en iyi</div></div>
+      </div>
+      <table>
+        <tr><th>Politika</th><th>En hızlı</th><th>Geo. ort.</th><th>Toplam</th></tr>
+        <tr class="me"><td>ExactMatch (auto)</td><td>%80,8</td><td>1,09×</td><td>1,29×</td></tr>
+        <tr><td>Her zaman Wu-Manber</td><td>%62,5</td><td>1,25×</td><td>1,50×</td></tr>
+        <tr><td>Klasik kural (BM / AC)</td><td>%17,5</td><td>2,64×</td><td>1,74×</td></tr>
+        <tr><td>Eşik kuralı (m &lt; 50)</td><td>%3,3</td><td>7,38×</td><td>25,57×</td></tr>
+      </table>
+    </div>
+    <div class="fig"><img src="assets/fig-ecdf.svg" alt="Yavaşlama dağılımı"></div>
+  </div>
+  <div class="footer"><span>Farklı tohumlar · ızgara arası n, k, m · yeni alfabeler (ikili, Unicode) · gerçek veri (train_gpt2.c, HumanEval) · ısınma + 5 tekrar medyanı</span><span>6 / 8</span></div>
+</section>
+
+<!-- 7. YANLIŞ SEÇİM -->
+<section class="slide">
+  <div class="speaker">Görkem · 3:55–4:30</div>
+  <div class="kicker">Yanlış seçim analizi</div>
+  <h2>En kötü vaka: <span class="hl">20× yavaş</span> — ama neden?</h2>
+  <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
+    <div class="card">
+      <h3>val-116 · 164 HumanEval problemi, k = 30</h3>
+      <ul class="clean">
+        <li>Sözleşme: karar <b>ilk belgeye</b> göre verilir</li>
+        <li>İlk belge (HumanEval/0) yalnızca <b>600 karakter</b> → n küçük → dizin ucuz görünüyor</li>
+        <li>Seçilen: <b style="color:var(--bad)">Suffix array</b> · 17,4 ms</li>
+        <li>En hızlı: <b style="color:var(--good)">Aho-Corasick</b> · 0,85 ms</li>
+      </ul>
+    </div>
+    <div>
+      <div class="callout bad" style="margin-bottom:16px"><b>Kök neden:</b> dizin 164 belgenin <b>her biri için</b> yeniden kuruluyor; veri şekli akışın uzunluğunu (103 560 karakter) bilemiyor.</div>
+      <div class="callout good" style="margin-bottom:16px"><b>Bu vaka dışında</b> en kötü yavaşlama <b>2,9×</b>; hataların çoğu &lt; 0,5 ms'lik vakalar. Görülmemiş alfabelerde (ikili, Unicode) 1,03–1,06×.</div>
+      <div class="callout"><b>Çözüm önerisi:</b> veri şekline "belge sayısı / toplam uzunluk" eklemek — sözleşmenin dışında, raporda tartışıldı.</div>
+    </div>
+  </div>
+  <div class="footer"><span>Raporda §6 tablo + §7 sınırlar</span><span>7 / 8</span></div>
+</section>
+
+<!-- 8. KAPANIŞ -->
+<section class="slide">
+  <div class="speaker">Ahmed Berat · 4:30–5:00</div>
+  <div class="kicker">Özet</div>
+  <h2>Doğru, ölçülmüş, <span class="hl">genişletilebilir</span></h2>
+  <div class="grid" style="grid-template-columns: repeat(4,1fr); margin-bottom:26px">
+    <div class="card stat"><div class="big">12</div><div class="lbl">atom (10 yeni, 2 bonus)</div></div>
+    <div class="card stat"><div class="big">363</div><div class="lbl">test · ~4 s · bağımlılıksız</div></div>
+    <div class="card stat"><div class="big">400</div><div class="lbl">rastgele vaka, oracle ile birebir</div></div>
+    <div class="card stat"><div class="big">300</div><div class="lbl">ölçülen vaka (180 + 120)</div></div>
+  </div>
+  <ul class="clean">
+    <li><b>Gerçek veri:</b> GPT-2 eğitim kodu (llm.c <code>train_gpt2.c</code>) · 164 HumanEval problemi</li>
+    <li><b>Sınırlar:</b> ilk belge varsayımı · rastgele metin varsayımı · katsayılar makineye bağlı</li>
+    <li><b>Tekrar üretilebilir:</b> <code>npm test</code> · <code>npm run calibrate</code> · <code>npm run bench</code> · <code>npm run report</code></li>
+  </ul>
+  <p style="margin-top:28px;font-size:30px;font-weight:700">Teşekkürler — <span class="hl" style="background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent">sorularınız?</span></p>
+  <div class="footer"><span>Ahmed Berat Özer · Görkem Özer · YZM327</span><span>8 / 8</span></div>
+</section>
+
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud"></div>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+  let t0 = null;
+  function fit() {
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    slides.forEach((el) => el.style.setProperty('--s', s));
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((el, k) => { el.classList.toggle('active', k === i); el.classList.toggle('prev', k < i); });
+    document.getElementById('progress').style.width = `${((i + 1) / slides.length) * 100}%`;
+    history.replaceState(null, '', `#${i + 1}`);
+  }
+  addEventListener('keydown', (e) => {
+    if (!t0) t0 = Date.now();
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) show(i + 1);
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) show(i - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f') document.documentElement.requestFullscreen?.();
+  });
+  addEventListener('click', (e) => { if (!t0) t0 = Date.now(); show(e.clientX > innerWidth / 3 ? i + 1 : i - 1); });
+  setInterval(() => {
+    if (!t0) { document.getElementById('hud').textContent = '→ / boşluk: ileri · ← geri · f: tam ekran'; return; }
+    const s = Math.floor((Date.now() - t0) / 1000);
+    document.getElementById('hud').textContent = `${String(Math.floor(s / 60)).padStart(1, '0')}:${String(s % 60).padStart(2, '0')} / 5:00`;
+  }, 500);
+  addEventListener('resize', fit);
+  fit(); show(i);
+</script>
+</body>
+</html>
