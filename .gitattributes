@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.pdf binary
+*.ps1 binary
+tests/data/** linguist-vendored

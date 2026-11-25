@@ -1,0 +1,20 @@
+{
+  "name": "desen-eslestirme",
+  "version": "0.1.0",
+  "description": "IoS text.pattern-match.exact: kod ve yapay zekâ derlemleri için tam desen eşleştirme atomları ve girdiye göre seçim yapan ExactMatch molekülü",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "ios": "bin/ios.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "calibrate": "node --expose-gc bench/calibrate.js",
+    "bench": "node --expose-gc bench/validate.js",
+    "figures": "node bench/figures.js",
+    "report": "node bench/report.js"
+  },
+  "license": "MIT"
+}
