@@ -1,0 +1,573 @@
+{
+  "meta": {
+    "machine": {
+      "cpu": "Intel(R) Core(TM) Ultra 9 275HX",
+      "cores": 24,
+      "memoryGB": 63,
+      "platform": "Windows_NT 10.0.26200 x64",
+      "node": "v24.15.0",
+      "v8": "13.6.233.17-node.48",
+      "exposeGc": true,
+      "date": "2026-11-25T10:46:04.772Z"
+    },
+    "cases": 120,
+    "seconds": 172
+  },
+  "table": [
+    {
+      "policy": "ExactMatch (auto)",
+      "cases": 120,
+      "fastestRate": 0.8083333333333333,
+      "within10Rate": 0.8333333333333334,
+      "geomeanSlowdown": 1.0894991393084665,
+      "worstSlowdown": 20.50106107050224,
+      "worstCase": "val-116",
+      "totalRatio": 1.286044707864325,
+      "picks": {
+        "WuManberSearch": 87,
+        "HashQSearch": 8,
+        "AhoCorasickSearch": 14,
+        "RabinKarpSearch": 6,
+        "HorspoolSearch": 2,
+        "TunedBoyerMooreSearch": 1,
+        "NaiveSearch": 1,
+        "SuffixArraySearch": 1
+      }
+    },
+    {
+      "policy": "Eşik kuralı (m<50 → TunedBM, değilse HASHq)",
+      "cases": 120,
+      "fastestRate": 0.03333333333333333,
+      "within10Rate": 0.041666666666666664,
+      "geomeanSlowdown": 7.380778172406696,
+      "worstSlowdown": 218.34228702993093,
+      "worstCase": "val-2",
+      "totalRatio": 25.566591977493157,
+      "picks": {
+        "HashQSearch": 18,
+        "TunedBoyerMooreSearch": 102
+      }
+    },
+    {
+      "policy": "Klasik kural (k=1 → Boyer-Moore, k>1 → Aho-Corasick)",
+      "cases": 120,
+      "fastestRate": 0.175,
+      "within10Rate": 0.19166666666666668,
+      "geomeanSlowdown": 2.6374971669795735,
+      "worstSlowdown": 13.901826484018265,
+      "worstCase": "val-106",
+      "totalRatio": 1.7369333329626684,
+      "picks": {
+        "AhoCorasickSearch": 112,
+        "BoyerMooreSearch": 8
+      }
+    },
+    {
+      "policy": "Her zaman NaiveSearch",
+      "cases": 120,
+      "fastestRate": 0,
+      "within10Rate": 0,
+      "geomeanSlowdown": 38.099400341700424,
+      "worstSlowdown": 950.6267587618315,
+      "worstCase": "val-2",
+      "totalRatio": 101.05705381790484,
+      "picks": {
+        "NaiveSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman BoyerMooreSearch",
+      "cases": 120,
+      "fastestRate": 0,
+      "within10Rate": 0.016666666666666666,
+      "geomeanSlowdown": 9.115423462408483,
+      "worstSlowdown": 266.28293681248397,
+      "worstCase": "val-2",
+      "totalRatio": 28.162524012198613,
+      "picks": {
+        "BoyerMooreSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman HorspoolSearch",
+      "cases": 120,
+      "fastestRate": 0.058333333333333334,
+      "within10Rate": 0.06666666666666667,
+      "geomeanSlowdown": 9.319654494611719,
+      "worstSlowdown": 302.04655922230745,
+      "worstCase": "val-2",
+      "totalRatio": 34.591994173132456,
+      "picks": {
+        "HorspoolSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman ShiftOrSearch",
+      "cases": 120,
+      "fastestRate": 0.008333333333333333,
+      "within10Rate": 0.008333333333333333,
+      "geomeanSlowdown": 17.326768564168248,
+      "worstSlowdown": 243.24209090133877,
+      "worstCase": "val-2",
+      "totalRatio": 40.430274969211574,
+      "picks": {
+        "ShiftOrSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman TunedBoyerMooreSearch",
+      "cases": 120,
+      "fastestRate": 0.016666666666666666,
+      "within10Rate": 0.016666666666666666,
+      "geomeanSlowdown": 8.563166490179107,
+      "worstSlowdown": 218.34228702993093,
+      "worstCase": "val-2",
+      "totalRatio": 25.800313027330102,
+      "picks": {
+        "TunedBoyerMooreSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman HashQSearch",
+      "cases": 120,
+      "fastestRate": 0.08333333333333333,
+      "within10Rate": 0.1,
+      "geomeanSlowdown": 4.659761919821643,
+      "worstSlowdown": 54.54762513856911,
+      "worstCase": "val-2",
+      "totalRatio": 13.21584707808726,
+      "picks": {
+        "HashQSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman KmpSearch",
+      "cases": 120,
+      "fastestRate": 0,
+      "within10Rate": 0.008333333333333333,
+      "geomeanSlowdown": 27.73104180743342,
+      "worstSlowdown": 719.6043318836872,
+      "worstCase": "val-2",
+      "totalRatio": 78.75486568458747,
+      "picks": {
+        "KmpSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman RabinKarpSearch",
+      "cases": 120,
+      "fastestRate": 0.03333333333333333,
+      "within10Rate": 0.03333333333333333,
+      "geomeanSlowdown": 8.015903857076525,
+      "worstSlowdown": 97.46125066809194,
+      "worstCase": "val-45",
+      "totalRatio": 12.77378076410916,
+      "picks": {
+        "RabinKarpSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman AhoCorasickSearch",
+      "cases": 120,
+      "fastestRate": 0.175,
+      "within10Rate": 0.18333333333333332,
+      "geomeanSlowdown": 2.7517012205917064,
+      "worstSlowdown": 13.901826484018265,
+      "worstCase": "val-106",
+      "totalRatio": 1.740746094803358,
+      "picks": {
+        "AhoCorasickSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman WuManberSearch",
+      "cases": 120,
+      "fastestRate": 0.625,
+      "within10Rate": 0.6666666666666666,
+      "geomeanSlowdown": 1.2463246720614665,
+      "worstSlowdown": 5.41745602165088,
+      "worstCase": "val-51",
+      "totalRatio": 1.5039184016146205,
+      "picks": {
+        "WuManberSearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman SuffixArraySearch",
+      "cases": 120,
+      "fastestRate": 0,
+      "within10Rate": 0,
+      "geomeanSlowdown": 22.935209756687293,
+      "worstSlowdown": 237.2491349480969,
+      "worstCase": "val-118",
+      "totalRatio": 16.47433092493181,
+      "picks": {
+        "SuffixArraySearch": 120
+      }
+    },
+    {
+      "policy": "Her zaman FmIndexSearch",
+      "cases": 120,
+      "fastestRate": 0,
+      "within10Rate": 0,
+      "geomeanSlowdown": 24.308057098912645,
+      "worstSlowdown": 267.75951557093424,
+      "worstCase": "val-118",
+      "totalRatio": 17.39699566042929,
+      "picks": {
+        "FmIndexSearch": 120
+      }
+    }
+  ],
+  "mispredictions": [
+    {
+      "id": "val-116",
+      "alphabet": "humaneval",
+      "n": 600,
+      "sigma": 50,
+      "sigmaEff": 10.186,
+      "k": 30,
+      "mMin": 4,
+      "mMax": 10,
+      "chosen": "SuffixArraySearch",
+      "chosenMs": 17.389,
+      "best": "AhoCorasickSearch",
+      "bestMs": 0.8482,
+      "slowdown": 20.50106107050224
+    },
+    {
+      "id": "val-29",
+      "alphabet": "hex",
+      "n": 14796,
+      "sigma": 16,
+      "sigmaEff": 15.991,
+      "k": 5,
+      "mMin": 18,
+      "mMax": 26,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0947,
+      "best": "HashQSearch",
+      "bestMs": 0.0326,
+      "slowdown": 2.904907975460123
+    },
+    {
+      "id": "val-111",
+      "alphabet": "gpt2",
+      "n": 50680,
+      "sigma": 78,
+      "sigmaEff": 6.198,
+      "k": 1,
+      "mMin": 60,
+      "mMax": 60,
+      "chosen": "HashQSearch",
+      "chosenMs": 0.0471,
+      "best": "HorspoolSearch",
+      "bestMs": 0.0204,
+      "slowdown": 2.3088235294117645
+    },
+    {
+      "id": "val-5",
+      "alphabet": "actions",
+      "n": 21593,
+      "sigma": 4,
+      "sigmaEff": 3.999,
+      "k": 6,
+      "mMin": 37,
+      "mMax": 37,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0832,
+      "best": "HashQSearch",
+      "bestMs": 0.0432,
+      "slowdown": 1.9259259259259258
+    },
+    {
+      "id": "val-117",
+      "alphabet": "humaneval",
+      "n": 600,
+      "sigma": 50,
+      "sigmaEff": 10.186,
+      "k": 300,
+      "mMin": 5,
+      "mMax": 12,
+      "chosen": "WuManberSearch",
+      "chosenMs": 3.1013,
+      "best": "AhoCorasickSearch",
+      "bestMs": 1.7715,
+      "slowdown": 1.7506632797064634
+    },
+    {
+      "id": "val-53",
+      "alphabet": "code",
+      "n": 28390,
+      "sigma": 90,
+      "sigmaEff": 10.527,
+      "k": 59,
+      "mMin": 70,
+      "mMax": 70,
+      "chosen": "RabinKarpSearch",
+      "chosenMs": 0.4116,
+      "best": "TunedBoyerMooreSearch",
+      "bestMs": 0.2455,
+      "slowdown": 1.6765784114052955
+    },
+    {
+      "id": "val-87",
+      "alphabet": "binary",
+      "n": 186883,
+      "sigma": 2,
+      "sigmaEff": 2,
+      "k": 1,
+      "mMin": 11,
+      "mMax": 11,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.4631,
+      "best": "ShiftOrSearch",
+      "bestMs": 0.2923,
+      "slowdown": 1.5843311666096476
+    },
+    {
+      "id": "val-96",
+      "alphabet": "unicode",
+      "n": 31238,
+      "sigma": 62,
+      "sigmaEff": 61.785,
+      "k": 1,
+      "mMin": 37,
+      "mMax": 37,
+      "chosen": "HashQSearch",
+      "chosenMs": 0.0427,
+      "best": "HorspoolSearch",
+      "bestMs": 0.0272,
+      "slowdown": 1.5698529411764708
+    },
+    {
+      "id": "val-27",
+      "alphabet": "hex",
+      "n": 74663,
+      "sigma": 16,
+      "sigmaEff": 15.984,
+      "k": 3,
+      "mMin": 29,
+      "mMax": 29,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0719,
+      "best": "HashQSearch",
+      "bestMs": 0.0483,
+      "slowdown": 1.4886128364389235
+    },
+    {
+      "id": "val-67",
+      "alphabet": "binary",
+      "n": 419549,
+      "sigma": 2,
+      "sigmaEff": 2,
+      "k": 10,
+      "mMin": 15,
+      "mMax": 41,
+      "chosen": "WuManberSearch",
+      "chosenMs": 1.3333,
+      "best": "AhoCorasickSearch",
+      "bestMs": 0.9034,
+      "slowdown": 1.475868939561656
+    },
+    {
+      "id": "val-34",
+      "alphabet": "hex",
+      "n": 19236,
+      "sigma": 16,
+      "sigmaEff": 15.985,
+      "k": 3,
+      "mMin": 21,
+      "mMax": 21,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0498,
+      "best": "HorspoolSearch",
+      "bestMs": 0.0378,
+      "slowdown": 1.3174603174603174
+    },
+    {
+      "id": "val-57",
+      "alphabet": "code",
+      "n": 297274,
+      "sigma": 86,
+      "sigmaEff": 10.635,
+      "k": 332,
+      "mMin": 6,
+      "mMax": 40,
+      "chosen": "WuManberSearch",
+      "chosenMs": 3.9102,
+      "best": "AhoCorasickSearch",
+      "bestMs": 3.0919,
+      "slowdown": 1.2646592709984152
+    },
+    {
+      "id": "val-115",
+      "alphabet": "humaneval",
+      "n": 600,
+      "sigma": 50,
+      "sigmaEff": 10.186,
+      "k": 1,
+      "mMin": 5,
+      "mMax": 5,
+      "chosen": "NaiveSearch",
+      "chosenMs": 0.2327,
+      "best": "HorspoolSearch",
+      "bestMs": 0.1859,
+      "slowdown": 1.2517482517482517
+    },
+    {
+      "id": "val-85",
+      "alphabet": "binary",
+      "n": 18438,
+      "sigma": 2,
+      "sigmaEff": 2,
+      "k": 2,
+      "mMin": 16,
+      "mMax": 45,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0476,
+      "best": "HashQSearch",
+      "bestMs": 0.0381,
+      "slowdown": 1.2493438320209973
+    },
+    {
+      "id": "val-0",
+      "alphabet": "actions",
+      "n": 23727,
+      "sigma": 4,
+      "sigmaEff": 3.999,
+      "k": 4,
+      "mMin": 53,
+      "mMax": 53,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0863,
+      "best": "HashQSearch",
+      "bestMs": 0.0698,
+      "slowdown": 1.2363896848137537
+    },
+    {
+      "id": "val-98",
+      "alphabet": "unicode",
+      "n": 46556,
+      "sigma": 62,
+      "sigmaEff": 61.784,
+      "k": 190,
+      "mMin": 16,
+      "mMax": 16,
+      "chosen": "RabinKarpSearch",
+      "chosenMs": 0.6178,
+      "best": "WuManberSearch",
+      "bestMs": 0.5304,
+      "slowdown": 1.1647812971342384
+    },
+    {
+      "id": "val-86",
+      "alphabet": "binary",
+      "n": 67187,
+      "sigma": 2,
+      "sigmaEff": 2,
+      "k": 7,
+      "mMin": 3,
+      "mMax": 3,
+      "chosen": "AhoCorasickSearch",
+      "chosenMs": 3.441,
+      "best": "WuManberSearch",
+      "bestMs": 3.0141,
+      "slowdown": 1.1416343187021
+    },
+    {
+      "id": "val-44",
+      "alphabet": "code",
+      "n": 777186,
+      "sigma": 89,
+      "sigmaEff": 10.673,
+      "k": 143,
+      "mMin": 12,
+      "mMax": 18,
+      "chosen": "WuManberSearch",
+      "chosenMs": 2.5478,
+      "best": "AhoCorasickSearch",
+      "bestMs": 2.2538,
+      "slowdown": 1.1304463572632888
+    },
+    {
+      "id": "val-8",
+      "alphabet": "actions",
+      "n": 39810,
+      "sigma": 4,
+      "sigmaEff": 4,
+      "k": 6,
+      "mMin": 5,
+      "mMax": 5,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.1826,
+      "best": "AhoCorasickSearch",
+      "bestMs": 0.1621,
+      "slowdown": 1.1264651449722394
+    },
+    {
+      "id": "val-17",
+      "alphabet": "actions",
+      "n": 21778,
+      "sigma": 4,
+      "sigmaEff": 4,
+      "k": 10,
+      "mMin": 13,
+      "mMax": 13,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.067,
+      "best": "AhoCorasickSearch",
+      "bestMs": 0.0606,
+      "slowdown": 1.1056105610561056
+    },
+    {
+      "id": "val-6",
+      "alphabet": "actions",
+      "n": 81718,
+      "sigma": 4,
+      "sigmaEff": 3.999,
+      "k": 1,
+      "mMin": 60,
+      "mMax": 60,
+      "chosen": "HashQSearch",
+      "chosenMs": 0.0264,
+      "best": "WuManberSearch",
+      "bestMs": 0.0244,
+      "slowdown": 1.081967213114754
+    },
+    {
+      "id": "val-99",
+      "alphabet": "unicode",
+      "n": 25958,
+      "sigma": 62,
+      "sigmaEff": 61.796,
+      "k": 11,
+      "mMin": 68,
+      "mMax": 68,
+      "chosen": "WuManberSearch",
+      "chosenMs": 0.0473,
+      "best": "HorspoolSearch",
+      "bestMs": 0.0454,
+      "slowdown": 1.0418502202643172
+    },
+    {
+      "id": "val-73",
+      "alphabet": "binary",
+      "n": 731329,
+      "sigma": 2,
+      "sigmaEff": 2,
+      "k": 20,
+      "mMin": 26,
+      "mMax": 46,
+      "chosen": "WuManberSearch",
+      "chosenMs": 2.0443,
+      "best": "AhoCorasickSearch",
+      "bestMs": 2.013,
+      "slowdown": 1.0155489319423745
+    }
+  ],
+  "decisionMs": {
+    "median": 0.0669,
+    "max": 0.3346
+  }
+}
