@@ -78,13 +78,13 @@ code { font-size: .88em; background: var(--surface-2); border: 1px solid var(--l
 /* ---------- üst çubuk ---------- */
 .top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .top-inner { display: flex; align-items: center; justify-content: space-between; height: 58px; }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+.brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; font-weight: 600; letter-spacing: -.01em; }
 .brand b { color: var(--acc); font-weight: 700; }
 .logo svg { width: 28px; height: 28px; display: block; }
 .logo rect:first-child { fill: var(--acc); }
 .logo path { stroke: var(--acc-ink); stroke-width: 2.5; stroke-linecap: round; fill: none; }
 .logo .hl { fill: #fbbf24; }
-.top-links { display: flex; gap: 20px; font-size: 14px; }
+.top-links { display: flex; gap: 20px; font-size: 14px; white-space: nowrap; }
 .top-links a { color: var(--ink-2); }
 
 /* ---------- hero ---------- */
