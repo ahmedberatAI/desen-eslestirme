@@ -1,5 +1,9 @@
 # Akıllı Tam Desen Eşleştirme — IoS `text.pattern-match.exact`
 
+**Canlı demo:** https://ahmedberatai.github.io/desen-eslestirme/ — desenleri ve metni gir, molekülün hangi atomu
+neden seçtiğini gör, eşleşmeleri metin üzerinde incele ve 12 algoritmayı tarayıcında yarıştır. Arayüz (`index.html`,
+`web/`) `src/` altındaki kodu hiç değiştirmeden doğrudan tarayıcıda çalıştırır.
+
 Kaynak kod, log ve yapay zekâ derlemleri (LLM eğitim/değerlendirme verisi) içinde bir veya daha çok desenin geçtiği
 **bütün** yerleri bulan, Internet of Science (IoS) atom sözleşmesine uygun 12 tam eşleştirme atomu ve girdinin şekline
 bakarak bunlardan en hızlı olacağını tahmin edileni seçen **`ExactMatch` molekülü**.

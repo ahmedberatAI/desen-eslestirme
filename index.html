@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desen Eşleştirme Laboratuvarı</title>
+<meta name="description" content="12 tam desen eşleştirme algoritması ve girdinin şekline göre en hızlısını seçen ExactMatch molekülü — tarayıcıda canlı.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="web/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M8 11h16M8 16h9M8 21h12' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='16' y='13' width='9' height='6' rx='2' fill='%23fbbf24'/%3E%3C/svg%3E">
+<!-- src/calibration.js `node:fs` içe aktarır; tarayıcıda küçük bir ara katmana yönlendirilir. -->
+<script type="importmap">{ "imports": { "node:fs": "./web/node-fs-shim.js" } }</script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8"/><path d="M8 11h16M8 16h9M8 21h12"/><rect class="hl" x="16" y="13" width="9" height="6" rx="2"/></svg></span>
+      <span>Desen Eşleştirme <b>Lab</b></span>
+    </div>
+    <nav class="top-links">
+      <a href="#nasil">Nasıl çalışır?</a>
+      <a href="https://github.com/ahmedberatAI/desen-eslestirme" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">IoS · text.pattern-match.exact</p>
+    <h1>Metindeki her geçişi bul.<br><span>En hızlı algoritmayı molekül seçsin.</span></h1>
+    <p class="lede">12 tam eşleştirme algoritması (Boyer-Moore, Aho-Corasick, Wu-Manber, FM-index…) ve girdinin şekline bakarak
+      hangisinin en hızlı olacağını ölçümlerden öğrenilmiş bir maliyet modeliyle tahmin eden <code>ExactMatch</code> molekülü.
+      Hepsi tarayıcında, gerçek kaynak koduyla çalışıyor.</p>
+  </div>
+</section>
+
+<main class="wrap workspace">
+  <!-- ======= Girdi paneli ======= -->
+  <aside class="panel controls" aria-label="Girdi">
+    <div class="field">
+      <div class="label-row"><label>Örnek veri</label></div>
+      <div class="samples" id="samples">
+        <button type="button" data-sample="gpt2" class="sample">
+          <b>train_gpt2.c</b><small>GPT-2 eğitim kodu · 50 bin karakter</small>
+        </button>
+        <button type="button" data-sample="humaneval" class="sample">
+          <b>HumanEval</b><small>164 problem · JSONL akışı</small>
+        </button>
+        <button type="button" data-sample="trace" class="sample">
+          <b>Eylem izi</b><small>UDLR dizisi · σ = 4 · 300 bin</small>
+        </button>
+        <button type="button" data-sample="hex" class="sample">
+          <b>Hex döküm</b><small>σ = 16 · 200 bin</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="label-row">
+        <label for="patterns">Desenler</label>
+        <span class="hint" id="patternCount">0 desen</span>
+      </div>
+      <textarea id="patterns" rows="5" spellcheck="false" placeholder="Her satıra bir desen yaz"></textarea>
+      <p class="help">Her satır bir desen. Baştaki ve sondaki boşluklar korunur (<code>return·</code> gibi).</p>
+    </div>
+
+    <div class="field">
+      <div class="label-row">
+        <label for="corpus">Metin / derlem</label>
+        <span class="hint" id="corpusInfo">—</span>
+      </div>
+      <textarea id="corpus" rows="9" spellcheck="false" placeholder="Metni buraya yapıştır veya bir dosya yükle. İlk karakter { ise JSONL ({&quot;id&quot;, &quot;text&quot;} satırları) olarak okunur."></textarea>
+      <div class="row-between">
+        <label class="file-btn"><input type="file" id="file" accept=".txt,.jsonl,.json,.c,.h,.py,.js,.ts,.md,.log,.csv,text/*">Dosya yükle</label>
+        <select id="format" aria-label="Girdi biçimi">
+          <option value="auto">Biçim: otomatik</option>
+          <option value="text">Düz metin (tek belge)</option>
+          <option value="jsonl">JSONL (çok belge)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field two">
+      <div>
+        <label for="strategy">Strateji</label>
+        <select id="strategy"><option value="auto">auto · molekül seçsin</option></select>
+      </div>
+      <div>
+        <label class="switch"><input type="checkbox" id="ignoreCase"><span class="track"><span class="thumb"></span></span><span>Büyük/küçük harf duyarsız</span></label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="runBtn" class="btn primary">Ara <kbd>⌘↵</kbd></button>
+      <button type="button" id="raceBtn" class="btn">12 algoritmayı yarıştır</button>
+    </div>
+    <p class="error" id="error" role="alert" hidden></p>
+  </aside>
+
+  <!-- ======= Sonuçlar ======= -->
+  <section class="results" aria-live="polite">
+    <div class="empty" id="empty">
+      <div class="empty-art" aria-hidden="true">
+        <span>…for (int i = 0; i &lt; <mark>attention</mark>_forward(…</span>
+      </div>
+      <p>Soldan bir örnek seç ya da kendi metnini yapıştır, sonra <b>Ara</b>’ya bas.</p>
+    </div>
+
+    <div id="out" hidden>
+      <div class="stats" id="stats"></div>
+
+      <article class="card">
+        <header class="card-head">
+          <div>
+            <h2>Molekülün kararı</h2>
+            <p class="sub" id="decisionSub"></p>
+          </div>
+          <span class="pill" id="selectedPill"></span>
+        </header>
+        <div class="shape" id="shape"></div>
+        <p class="why" id="why"></p>
+        <div class="est-head">
+          <span>Tahmini çalışma süresi (maliyet modeli)</span>
+          <span class="legend"><i class="sw sel"></i>seçilen <i class="sw"></i>diğer <i class="sw na"></i>uygulanamaz</span>
+        </div>
+        <div class="bars" id="estimates"></div>
+      </article>
+
+      <article class="card" id="raceCard" hidden>
+        <header class="card-head">
+          <div>
+            <h2>Yarış: tahmin ve gerçek ölçüm</h2>
+            <p class="sub" id="raceSub"></p>
+          </div>
+        </header>
+        <div class="table-wrap"><table class="race" id="raceTable"></table></div>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <div>
+            <h2>Eşleşmeler</h2>
+            <p class="sub" id="matchSub"></p>
+          </div>
+        </header>
+        <div class="per-pattern" id="perPattern"></div>
+        <div class="viewer-bar">
+          <select id="docSelect" aria-label="Belge"></select>
+          <div class="nav">
+            <button type="button" class="btn sm" id="prevHit" aria-label="Önceki eşleşme">↑</button>
+            <span id="hitPos">–</span>
+            <button type="button" class="btn sm" id="nextHit" aria-label="Sonraki eşleşme">↓</button>
+          </div>
+        </div>
+        <pre class="viewer" id="viewer"></pre>
+        <details class="raw">
+          <summary>Text.Match çıktısı (JSONL)</summary>
+          <div class="row-between"><span class="hint" id="rawInfo"></span><button type="button" class="btn sm" id="download">JSONL indir</button></div>
+          <pre id="raw"></pre>
+        </details>
+      </article>
+    </div>
+  </section>
+</main>
+
+<section class="wrap explain" id="nasil">
+  <h2>Nasıl çalışır?</h2>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><h3>Veri şekli</h3><p>Molekül akıştaki ilk belgeye bakar: metin uzunluğu <i>n</i>, alfabe büyüklüğü σ, etkin alfabe σ<sub>eff</sub> = 1/Σp², desen sayısı <i>k</i> ve desen uzunlukları <i>m</i>.</p></div>
+    <div class="step"><span class="n">2</span><h3>Maliyet tahmini</h3><p>Her atom bu şekilden beklenen iş miktarlarını (kayma sayısı, DFA hücresi, dizin inşası…) verir. Tahmini süre = Σ katsayı × özellik; katsayılar 180 vakalık ölçüm ızgarasından öğrenildi.</p></div>
+    <div class="step"><span class="n">3</span><h3>Seçim ve arama</h3><p>En düşük tahmini maliyetli atom seçilir ve bütün akışta kullanılır. Her atom, kaba kuvvet <code>NaiveSearch</code> ile eleman eleman aynı sonucu verir.</p></div>
+  </div>
+  <div class="table-wrap"><table class="atoms" id="atomTable"></table></div>
+  <p class="foot">YZM327 Yapay Zeka için Yazılım Mühendisliği · Ahmed Berat Özer & Görkem Özer ·
+    <a href="https://github.com/ahmedberatAI/desen-eslestirme" target="_blank" rel="noopener">kaynak kod</a> ·
+    <a href="report/rapor.pdf" target="_blank" rel="noopener">rapor (PDF)</a></p>
+</section>
+
+<script type="module" src="web/app.js"></script>
+</body>
+</html>
